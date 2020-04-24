@@ -1,3 +1,5 @@
+# Emulate game on
+# http://micropython.org/unicorn/
 # Pong!
 # Using emulated hardware i2c, we can push enough frames for
 # rough animations. Performance for this project is reduced
