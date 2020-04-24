@@ -59,7 +59,6 @@ class Ball(Entity):
         if (self.x <= 0 or self.x >= SCREEN_WIDTH - self.w):#left-right screen limits
             self.x = 0
             game_over = True
-            score -= objetivo.score
         # update y ----------------------------------------------
         self.y += self.vy * math.sin(angleRad)
         if(self.y >= SCREEN_HEIGHT-self.w):#this should never happen
@@ -67,14 +66,16 @@ class Ball(Entity):
         if (self.y <= 1):
             self.y = 0
             if(self.x >= objetivo.x and self.x <= (objetivo.x + objetivo.w)):
-                score += objetivo.score
                 game_win = True
                 for i in range(0,10):
                     toggle_led()
                     time.sleep_ms(500)
             else:
                 game_over = True
-                score -= objetivo.score
+        if(game_over):
+            score -= objetivo.score
+        if(game_win):
+            score += objetivo.score
 
 class Player(Entity):
     pass
@@ -157,8 +158,8 @@ while(True):  # game has no end
     objetivo = random_objetivo(time.ticks_ms())
     
     fbuf.fill(0)
-    fbuf.text('ROUND: %d' % n_game, 0, 0)
-    fbuf.text('SCORE %d' % score, 0, 8)
+    fbuf.text('Rou: %d' % n_game, 0, 0)
+    fbuf.text('Sco: %d' % score, 0, 8)
     i2c.writeto(8, fbuf)
     time.sleep_ms(5000)
 
@@ -184,11 +185,18 @@ while(True):  # game has no end
         i2c.writeto(8, fbuf)
         time.sleep_ms(300)  # velocidad del juego
     fbuf.fill(0)
-    fbuf.text('ROUND: %d' % n_game, 0, 12)
-    fbuf.text('SCORE %d' % score, 0, 22)
+    fbuf.text('ROUND:%d' % n_game, 0, 12)
+    fbuf.text('SCORE:%d' % score, 0, 22)
+    print("------------------------------------------")
+    print('ROUND: %d' % n_game)
+    print('SCORE: %d' % score)
     if game_win:
+        print('YOU WIN')
         fbuf.text('YOU WIN', 0, 0)
     else:
+        print('YOU LOSE')
         fbuf.text('YOU LOSE', 0, 0)
+    print("------------------------------------------")
+    
     i2c.writeto(8, fbuf)
     time.sleep_ms(5000)
